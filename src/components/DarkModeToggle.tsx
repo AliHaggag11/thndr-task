@@ -7,10 +7,18 @@ type Theme = 'light' | 'dark' | 'system';
 export const DarkModeToggle = () => {
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window === 'undefined') return 'dark';
+    
     const savedTheme = localStorage.getItem('theme') as Theme;
-    if (!savedTheme || (savedTheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      return 'dark';
+    const isDarkClass = document.documentElement.classList.contains('dark');
+    
+    if (!savedTheme) {
+      return isDarkClass ? 'dark' : 'light';
     }
+    
+    if (savedTheme === 'system') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    
     return savedTheme;
   });
 
@@ -18,34 +26,39 @@ export const DarkModeToggle = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
+  useEffect(() => {
+    const isDarkClass = document.documentElement.classList.contains('dark');
+    const savedTheme = localStorage.getItem('theme') as Theme;
+    
+    if (!savedTheme) {
+      setTheme(isDarkClass ? 'dark' : 'light');
+      localStorage.setItem('theme', isDarkClass ? 'dark' : 'light');
+    } else if (savedTheme === 'system') {
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (isDark !== isDarkClass) {
+        isDark ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark');
+      }
+      setTheme('system');
+    } else {
+      if ((savedTheme === 'dark') !== isDarkClass) {
+        savedTheme === 'dark' ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark');
+      }
+      setTheme(savedTheme);
+    }
+  }, []);
+
   const updateTheme = (newTheme: Theme) => {
     if (newTheme === 'system') {
       localStorage.removeItem('theme');
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      isDark ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark');
     } else {
       localStorage.setItem('theme', newTheme);
-      if (newTheme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
+      newTheme === 'dark' ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark');
     }
     setTheme(newTheme);
     setIsOpen(false);
   };
-
-  // Force dark mode on initial mount if no theme is set
-  useEffect(() => {
-    if (!localStorage.getItem('theme')) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-      setTheme('dark');
-    }
-  }, []);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -63,7 +76,6 @@ export const DarkModeToggle = () => {
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, [theme]);
 
-  // Handle click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -115,7 +127,6 @@ export const DarkModeToggle = () => {
           {getCurrentIcon()}
         </div>
         
-        {/* Hover effect */}
         <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-light-accent/10 to-transparent 
                       dark:from-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
       </button>
