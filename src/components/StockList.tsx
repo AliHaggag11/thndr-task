@@ -2,7 +2,6 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useRef } from 'react';
 import { fetchStocks } from '../services/api';
 import { Stock, ApiResponse } from '../types';
-import { debounce } from 'lodash';
 
 const CardSkeleton = () => (
   <div className="group relative bg-white/50 dark:bg-gray-800/30 rounded-2xl 

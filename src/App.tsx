@@ -5,7 +5,7 @@ import { StockList } from './components/StockList';
 import { SplashScreen } from './components/SplashScreen';
 import { DarkModeToggle } from './components/DarkModeToggle';
 import { ScrollToTop } from './components/ScrollToTop';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
