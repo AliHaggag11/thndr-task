@@ -37,11 +37,11 @@ export const SplashScreen = () => {
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10 bg-repeat" />
       </div>
 
-      {/* Main content container - Added padding bottom for mobile */}
-      <div className="flex flex-col items-center justify-between w-full h-full 
-                    py-12 sm:py-0 relative">
-        {/* Logo and content section */}
-        <div className="flex-1 flex flex-col items-center justify-center w-full">
+      {/* Main content container - Adjusted spacing */}
+      <div className="flex flex-col items-center justify-between min-h-screen w-full 
+                    py-8 sm:py-0 relative">
+        {/* Logo and content section - Added negative margin to push content up */}
+        <div className="flex-1 flex flex-col items-center justify-center w-full -mt-16 sm:-mt-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -138,13 +138,13 @@ export const SplashScreen = () => {
           </motion.div>
         </div>
 
-        {/* Bottom section - Adjusted positioning for mobile */}
+        {/* Bottom section - Adjusted spacing */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5, duration: 0.8 }}
-          className="flex flex-col items-center space-y-3 mt-auto 
-                   pb-8 sm:pb-12 px-4 w-full"
+          className="flex flex-col items-center space-y-3 
+                   pb-16 sm:pb-20 px-4 w-full"
         >
           {/* Status Indicator */}
           <motion.div 

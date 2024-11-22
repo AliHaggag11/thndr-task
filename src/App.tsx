@@ -63,7 +63,7 @@ function App() {
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between h-16">
               {/* Logo and Live Market Section */}
-              <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-3 sm:space-x-6">
                 <motion.div 
                   className="relative group"
                   whileHover={{ scale: 1.05 }}
@@ -80,10 +80,20 @@ function App() {
                               dark:from-white/10 rounded-lg blur opacity-0 group-hover:opacity-100 
                               transition duration-500" />
                   <div className="relative flex items-center">
+                    {/* Small Logo for Mobile */}
+                    <img 
+                      src="/NDAQ.png" 
+                      alt="Nasdaq Logo" 
+                      className="h-6 sm:hidden transition-all duration-300
+                              dark:brightness-0 dark:invert dark:contrast-200 dark:saturate-0
+                              group-hover:brightness-110 dark:group-hover:brightness-200
+                              group-active:brightness-90 dark:group-active:brightness-150"
+                    />
+                    {/* Large Logo for Desktop */}
                     <img 
                       src="/NDAQ_BIG.png" 
                       alt="Nasdaq Logo" 
-                      className="h-8 transition-all duration-300
+                      className="h-8 hidden sm:block transition-all duration-300
                               dark:brightness-0 dark:invert dark:contrast-200 dark:saturate-0
                               group-hover:brightness-110 dark:group-hover:brightness-200
                               group-active:brightness-90 dark:group-active:brightness-150"
@@ -116,12 +126,12 @@ function App() {
                 </motion.div>
               </div>
 
-              {/* Search Section */}
+              {/* Search Section - Adjusted margins for mobile */}
               <motion.div 
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="flex-1 max-w-2xl mx-4"
+                className="flex-1 max-w-2xl mx-2 sm:mx-4"
               >
                 <div className="relative group">
                   <div className="absolute -inset-1 bg-gradient-to-r from-light-accent/5 via-light-accent/10 to-light-accent/5 
@@ -136,7 +146,7 @@ function App() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 }}
-                className="relative group"
+                className="relative group ml-2 sm:ml-0"
               >
                 <div className="absolute -inset-2 bg-gradient-to-r from-light-accent/10 to-transparent 
                             dark:from-blue-500/10 rounded-lg blur opacity-0 group-hover:opacity-100 
