@@ -16,13 +16,24 @@ export default defineConfig({
       short_name: 'NASDAQ',
       description: 'Track NASDAQ stocks in real-time',
       theme_color: '#4f46e5',
+      background_color: '#0f172a',
+      display: 'standalone',
+      orientation: 'portrait',
       icons: [
         {
           src: 'NDAQ.png',
           sizes: '192x192',
           type: 'image/png'
+        },
+        {
+          src: 'NDAQ.png',
+          sizes: '512x512',
+          type: 'image/png'
         }
-      ]
+      ],
+      start_url: '/',
+      scope: '/',
+      prefer_related_applications: false
     }
   })],
 })

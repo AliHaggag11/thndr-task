@@ -40,25 +40,26 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
   return (
     <AnimatePresence>
       {isOpen && (
-        // Backdrop with click handler
         <div 
-          className="fixed inset-0 flex items-center justify-center z-50 p-4 sm:p-6 bg-black/20 dark:bg-black/40 backdrop-blur-sm"
+          className="fixed inset-0 flex items-end sm:items-center justify-center z-50 
+                   bg-black/20 dark:bg-black/40 backdrop-blur-sm"
           onClick={handleBackdropClick}
         >
-          {/* Modal Content */}
           <motion.div
             drag="y"
             dragConstraints={{ top: 0, bottom: 0 }}
             dragElastic={0.2}
             onDragEnd={handleDragEnd}
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ duration: 0.2 }}
-            className="w-full max-w-2xl max-h-[90vh] overflow-y-auto
-                     bg-white dark:bg-gray-800 rounded-2xl shadow-xl 
-                     border border-gray-200/50 dark:border-gray-700/50
-                     backdrop-blur-xl backdrop-saturate-150"
+            initial={{ opacity: 0, y: '100%' }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: '100%' }}
+            transition={{ duration: 0.3 }}
+            className="w-full sm:w-auto sm:max-w-2xl h-[85vh] sm:h-auto sm:max-h-[90vh] 
+                     overflow-y-auto bg-white dark:bg-gray-800 
+                     rounded-t-2xl sm:rounded-2xl shadow-xl 
+                     border-t border-gray-200/50 dark:border-gray-700/50 sm:border
+                     backdrop-blur-xl backdrop-saturate-150
+                     will-change-transform"
           >
             {/* Drag Handle */}
             <div className="flex justify-center p-2">

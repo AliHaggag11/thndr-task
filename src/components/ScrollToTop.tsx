@@ -41,7 +41,9 @@ export const ScrollToTop = () => {
                     transform hover:-translate-y-1 hover:scale-110
                     transition-all duration-300 ease-out
                     group z-50
-                    ${isModalOpen ? 'filter blur-sm pointer-events-none' : ''}`}
+                    ${isModalOpen ? 'filter blur-sm pointer-events-none' : ''}
+                    env(safe-area-inset-bottom, 24px)
+                    env(safe-area-inset-right, 24px)`}
           aria-label="Scroll to top"
           disabled={isModalOpen}
         >
