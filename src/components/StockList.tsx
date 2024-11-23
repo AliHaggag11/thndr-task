@@ -3,6 +3,7 @@ import { useCallback, useRef, useState } from 'react';
 import { fetchStocks } from '../services/api';
 import { Stock, ApiResponse } from '../types';
 import { motion } from 'framer-motion';
+import { FiTrendingUp, FiDollarSign, FiGlobe, FiBarChart } from 'react-icons/fi';
 import { StockModal } from './StockModal';
 
 const CardSkeleton = () => (
@@ -15,22 +16,15 @@ const CardSkeleton = () => (
                 overflow-hidden will-change-transform"
   >
     <div className="relative p-6 space-y-6">
-      {/* Header Section */}
       <div className="flex justify-between items-start">
         <div className="space-y-2 animate-pulse">
-          {/* Ticker */}
-          <div className="h-7 w-20 bg-gray-200 dark:bg-gray-700/50 rounded-lg" />
-          {/* Exchange */}
-          <div className="h-4 w-32 bg-gray-200/50 dark:bg-gray-700/30 rounded-full" />
+          <div className="h-7 w-20 bg-gray-200/50 dark:bg-gray-700/50 rounded-lg" />
+          <div className="h-4 w-32 bg-gray-200/30 dark:bg-gray-700/30 rounded-full" />
         </div>
       </div>
-
-      {/* Company Name */}
       <div className="pb-4 border-b border-gray-100/50 dark:border-gray-700/30 animate-pulse">
-        <div className="h-4 w-3/4 bg-gray-200/50 dark:bg-gray-700/30 rounded-lg" />
+        <div className="h-4 w-3/4 bg-gray-200/30 dark:bg-gray-700/30 rounded-lg" />
       </div>
-
-      {/* Details Grid */}
       <div className="grid grid-cols-2 gap-4 animate-pulse">
         <div className="space-y-2">
           <div className="h-4 w-16 bg-gray-200/30 dark:bg-gray-700/20 rounded-lg" />
@@ -45,10 +39,9 @@ const CardSkeleton = () => (
   </motion.div>
 );
 
-export const StockList = ({ searchQuery }: { searchQuery: string }) => {
-  // Track if we're near the bottom to prevent multiple simultaneous requests
-  const isNearBottom = useRef(false);
-  
+export const StockList = ({ searchQuery, filters }: { searchQuery: string; filters?: any }) => {
+  const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
+
   const {
     data,
     fetchNextPage,
@@ -58,44 +51,23 @@ export const StockList = ({ searchQuery }: { searchQuery: string }) => {
     error,
     isFetchingNextPage
   } = useInfiniteQuery({
-    queryKey: ['stocks', searchQuery],
-    queryFn: ({ pageParam }) => fetchStocks(searchQuery, pageParam as string),
-    getNextPageParam: (lastPage: ApiResponse) => lastPage.next_url,
-    initialPageParam: null as string | null,
-    staleTime: 60 * 1000, // Consider data fresh for 1 minute
-    gcTime: 5 * 60 * 1000, // Keep unused data for 5 minutes
-    refetchOnWindowFocus: false, // Prevent refetch on window focus
+    queryKey: ['stocks', searchQuery, filters],
+    queryFn: ({ pageParam }) => fetchStocks(searchQuery, pageParam === null ? undefined : pageParam),
+    getNextPageParam: (lastPage: ApiResponse) => lastPage.next_url || null,
+    initialPageParam: null,
   });
 
-  // Create a more robust observer cleanup
   const observer = useRef<IntersectionObserver | null>(null);
-
-  const lastElementRef = useCallback((node: HTMLDivElement | null) => {
+  const lastElementRef = useCallback((node: HTMLElement | null) => {
+    if (isFetchingNextPage) return;
     if (observer.current) observer.current.disconnect();
-    if (!node || isFetchingNextPage || !hasNextPage) return;
-
-    observer.current = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !isNearBottom.current) {
-          isNearBottom.current = true;
-          fetchNextPage().finally(() => {
-            setTimeout(() => {
-              isNearBottom.current = false;
-            }, 1000);
-          });
-        }
-      },
-      {
-        root: null,
-        rootMargin: '300px', // Increased to load earlier
-        threshold: 0.1
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasNextPage) {
+        fetchNextPage();
       }
-    );
-
-    observer.current.observe(node);
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
-
-  const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
+    });
+    if (node) observer.current.observe(node);
+  }, [isFetchingNextPage, hasNextPage, fetchNextPage]);
 
   if (isLoading) {
     const columnCount = window.innerWidth < 640 ? 1 : 
@@ -112,7 +84,7 @@ export const StockList = ({ searchQuery }: { searchQuery: string }) => {
       </div>
     );
   }
-  
+
   if (isError) return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -125,7 +97,7 @@ export const StockList = ({ searchQuery }: { searchQuery: string }) => {
       </div>
     </motion.div>
   );
-  
+
   if (!data) return null;
 
   return (
@@ -136,6 +108,7 @@ export const StockList = ({ searchQuery }: { searchQuery: string }) => {
             const isLastElement = pageIndex === data.pages.length - 1 && 
                                 index === page.results.length - 1;
             const uniqueKey = `${pageIndex}-${stock.ticker}`;
+            const isMobile = window.innerWidth < 640;
             
             return (
               <motion.div
@@ -145,7 +118,7 @@ export const StockList = ({ searchQuery }: { searchQuery: string }) => {
                 animate={{ opacity: 1 }}
                 transition={{ 
                   duration: 0.2,
-                  delay: window.innerWidth < 640 ? (index % 4) * 0.05 : (index % 4) * 0.1
+                  delay: isMobile ? index * 0.05 : (index % 4) * 0.1
                 }}
                 onClick={() => setSelectedStock(stock)}
                 className="group relative bg-white/90 dark:bg-gray-800/50 rounded-2xl 
@@ -157,55 +130,55 @@ export const StockList = ({ searchQuery }: { searchQuery: string }) => {
                           transition-all duration-300 ease-out
                           cursor-pointer"
               >
-                {/* Enhanced Card Content */}
                 <div className="relative p-6">
-                  {/* Header Section */}
+                  {/* Header */}
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex flex-col">
-                      {/* Ticker with Enhanced Styling */}
-                      <div className="flex items-center space-x-2">
-                        <span className="text-2xl font-bold bg-clip-text text-transparent 
-                                     bg-gradient-to-r from-light-text-primary to-light-text-primary/90
-                                     dark:from-white dark:to-gray-300
-                                     group-hover:from-light-accent group-hover:to-light-accent/90
-                                     dark:group-hover:from-blue-400 dark:group-hover:to-blue-500 
-                                     transition-all duration-300">
+                      <div className="flex items-center space-x-3">
+                        <h3 className="text-2xl font-bold bg-clip-text text-transparent 
+                                   bg-gradient-to-r from-light-text-primary to-light-text-primary/90
+                                   dark:from-white dark:to-gray-300
+                                   group-hover:from-light-accent group-hover:to-light-accent/90
+                                   dark:group-hover:from-blue-400 dark:group-hover:to-blue-500 
+                                   transition-all duration-300">
                           {stock.ticker}
+                        </h3>
+                        <span className="px-2 py-1 text-[10px] font-medium rounded-full
+                                     bg-green-400/10 dark:bg-green-500/10
+                                     text-green-600 dark:text-green-400
+                                     border border-green-400/20 dark:border-green-500/20">
+                          Active
                         </span>
                       </div>
-
-                      {/* Exchange & Currency with Better Layout */}
                       <div className="flex items-center mt-2 space-x-2">
-                        <span className="text-xs px-2 py-1 rounded-md
-                                     bg-light-secondary/50 dark:bg-gray-700/50
-                                     text-light-text-secondary dark:text-gray-400 
-                                     font-medium">
-                          {stock.primary_exchange}
-                        </span>
-                        <span className="text-xs px-2 py-1 rounded-md
-                                     bg-light-accent/5 dark:bg-blue-500/5
-                                     text-light-accent dark:text-blue-400 
-                                     font-medium">
-                          {stock.currency_name}
-                        </span>
+                        <div className="flex items-center space-x-1 text-xs text-light-text-secondary dark:text-gray-400">
+                          <FiGlobe className="w-3 h-3" />
+                          <span>{stock.primary_exchange}</span>
+                        </div>
+                        <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
+                        <div className="flex items-center space-x-1 text-xs text-light-text-secondary dark:text-gray-400">
+                          <FiDollarSign className="w-3 h-3" />
+                          <span>{stock.currency_name}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Company Name with Better Typography */}
+                  {/* Company Name */}
                   <div className="mb-6 pb-4 border-b border-gray-100/50 dark:border-gray-700/50">
-                    <h3 className="text-sm text-light-text-primary dark:text-gray-200 
-                                 line-clamp-2 font-medium leading-relaxed">
+                    <p className="text-sm text-light-text-primary dark:text-gray-200 
+                               line-clamp-2 font-medium leading-relaxed">
                       {stock.name}
-                    </h3>
+                    </p>
                   </div>
 
-                  {/* Details Grid with Enhanced Layout */}
+                  {/* Details Grid */}
                   <div className="grid grid-cols-2 gap-6">
-                    <div className="flex flex-col space-y-1.5">
+                    <div className="flex flex-col space-y-1">
                       <span className="text-xs text-light-text-secondary/80 dark:text-gray-400/80 
-                                   font-medium">
-                        Market
+                                   flex items-center space-x-1">
+                        <FiBarChart className="w-3 h-3" />
+                        <span>Market</span>
                       </span>
                       <span className="text-sm font-medium text-light-text-primary dark:text-white
                                    group-hover:text-light-accent dark:group-hover:text-blue-400
@@ -213,10 +186,11 @@ export const StockList = ({ searchQuery }: { searchQuery: string }) => {
                         {stock.market}
                       </span>
                     </div>
-                    <div className="flex flex-col space-y-1.5">
+                    <div className="flex flex-col space-y-1">
                       <span className="text-xs text-light-text-secondary/80 dark:text-gray-400/80 
-                                   font-medium">
-                        Type
+                                   flex items-center space-x-1">
+                        <FiTrendingUp className="w-3 h-3" />
+                        <span>Type</span>
                       </span>
                       <span className="text-sm font-medium text-light-text-primary dark:text-white
                                    group-hover:text-light-accent dark:group-hover:text-blue-400
@@ -226,43 +200,37 @@ export const StockList = ({ searchQuery }: { searchQuery: string }) => {
                     </div>
                   </div>
 
-                  {/* Enhanced Hover Effects */}
+                  {/* Hover Gradient */}
                   <div className="absolute inset-0 bg-gradient-to-br 
                               from-light-accent/[0.02] to-transparent
                               dark:from-blue-500/[0.02] opacity-0 
                               group-hover:opacity-100 transition-opacity" />
-                  
-                  {/* Bottom Gradient Line */}
-                  <div className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r 
-                              from-transparent via-light-accent/30 to-transparent
-                              dark:via-blue-500/30 opacity-0 group-hover:opacity-100 
-                              transition-opacity duration-300" />
                 </div>
               </motion.div>
             );
           })
         )}
       </div>
-      
-      {/* Stock Modal */}
+
       <StockModal 
         stock={selectedStock!}
         isOpen={!!selectedStock}
         onClose={() => setSelectedStock(null)}
       />
-      
-      {/* Simplified loading indicator */}
+
+      {/* Loading More Indicator */}
       {isFetchingNextPage && (
         <div className="flex justify-center items-center py-8 space-x-3">
           <div className="animate-spin rounded-full h-6 w-6 border-2 border-light-accent/20 
-                       dark:border-blue-500/20 border-t-light-accent dark:border-t-blue-500" />
+                       dark:border-blue-500/20 border-t-light-accent dark:border-t-blue-500
+                       will-change-transform" />
           <span className="text-sm text-light-text-secondary dark:text-gray-400">
             Loading more stocks...
           </span>
         </div>
       )}
-      
-      {/* End of list indicator */}
+
+      {/* End of List Indicator */}
       {!hasNextPage && data.pages.length > 0 && (
         <div className="text-center py-8">
           <div className="inline-flex items-center px-4 py-2 space-x-2 
