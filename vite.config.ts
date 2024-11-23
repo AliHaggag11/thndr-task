@@ -15,7 +15,7 @@ export default defineConfig({
       name: 'NASDAQ Stock Tracker',
       short_name: 'NASDAQ',
       description: 'Track NASDAQ stocks in real-time',
-      theme_color: '#4f46e5',
+      theme_color: '#0f172a',
       background_color: '#0f172a',
       display: 'standalone',
       orientation: 'portrait',
