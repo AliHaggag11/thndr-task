@@ -62,8 +62,8 @@ function App() {
 
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between h-16">
-              {/* Logo and Live Market Section */}
-              <div className="flex items-center space-x-3 sm:space-x-6">
+              {/* Logo and Live Market Section - Added margin for mobile */}
+              <div className="flex items-center space-x-3 sm:space-x-6 mr-4 sm:mr-0">
                 <motion.div 
                   className="relative group"
                   whileHover={{ scale: 1.05 }}
