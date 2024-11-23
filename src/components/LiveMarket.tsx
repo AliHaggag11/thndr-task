@@ -48,10 +48,10 @@ export const LiveMarket = () => {
         nextEvent: '',
         timeUntil: '',
         statusColor: {
-          bg: 'from-gray-400/10 to-gray-500/5 dark:from-gray-500/10 dark:to-gray-400/5',
-          text: 'from-gray-600 to-gray-500 dark:from-gray-400 dark:to-gray-500',
-          border: 'border-gray-400/20 dark:border-gray-500/20',
-          dot: 'bg-gray-400 dark:bg-gray-500'
+          bg: 'from-red-400/10 to-red-500/5 dark:from-red-500/10 dark:to-red-400/5',
+          text: 'from-red-600 to-red-500 dark:from-red-400 dark:to-red-500',
+          border: 'border-red-400/20 dark:border-red-500/20',
+          dot: 'bg-red-400 dark:bg-red-500'
         }
       };
 
@@ -61,7 +61,13 @@ export const LiveMarket = () => {
           ...state,
           status: 'Weekend',
           nextEvent: 'Market Opens',
-          timeUntil: `in ${daysUntilMonday} day${daysUntilMonday > 1 ? 's' : ''}`
+          timeUntil: `in ${daysUntilMonday} day${daysUntilMonday > 1 ? 's' : ''}`,
+          statusColor: {
+            bg: 'from-purple-400/10 to-purple-500/5 dark:from-purple-500/10 dark:to-purple-400/5',
+            text: 'from-purple-600 to-purple-500 dark:from-purple-400 dark:to-purple-500',
+            border: 'border-purple-400/20 dark:border-purple-500/20',
+            dot: 'bg-purple-400 dark:bg-purple-500'
+          }
         };
       } else if (timeInMinutes < preMarketStart) {
         const minutesUntil = preMarketStart - timeInMinutes;
@@ -69,7 +75,13 @@ export const LiveMarket = () => {
           ...state,
           status: 'Pre-market Soon',
           nextEvent: 'Pre-market',
-          timeUntil: formatTimeUntil(minutesUntil)
+          timeUntil: formatTimeUntil(minutesUntil),
+          statusColor: {
+            bg: 'from-blue-400/10 to-blue-500/5 dark:from-blue-500/10 dark:to-blue-400/5',
+            text: 'from-blue-600 to-blue-500 dark:from-blue-400 dark:to-blue-500',
+            border: 'border-blue-400/20 dark:border-blue-500/20',
+            dot: 'bg-blue-400 dark:bg-blue-500'
+          }
         };
       } else if (timeInMinutes < marketOpen) {
         const minutesUntil = marketOpen - timeInMinutes;
@@ -107,10 +119,10 @@ export const LiveMarket = () => {
           nextEvent: 'Trading Ends',
           timeUntil: formatTimeUntil(minutesUntil),
           statusColor: {
-            bg: 'from-amber-400/10 to-amber-500/5 dark:from-amber-500/10 dark:to-amber-400/5',
-            text: 'from-amber-600 to-amber-500 dark:from-amber-400 dark:to-amber-500',
-            border: 'border-amber-400/20 dark:border-amber-500/20',
-            dot: 'bg-amber-400 dark:bg-amber-500'
+            bg: 'from-orange-400/10 to-orange-500/5 dark:from-orange-500/10 dark:to-orange-400/5',
+            text: 'from-orange-600 to-orange-500 dark:from-orange-400 dark:to-orange-500',
+            border: 'border-orange-400/20 dark:border-orange-500/20',
+            dot: 'bg-orange-400 dark:bg-orange-500'
           }
         };
       } else {
@@ -118,7 +130,13 @@ export const LiveMarket = () => {
         state = {
           ...state,
           nextEvent: 'Pre-market',
-          timeUntil: formatTimeUntil(minutesUntil)
+          timeUntil: formatTimeUntil(minutesUntil),
+          statusColor: {
+            bg: 'from-red-400/10 to-red-500/5 dark:from-red-500/10 dark:to-red-400/5',
+            text: 'from-red-600 to-red-500 dark:from-red-400 dark:to-red-500',
+            border: 'border-red-400/20 dark:border-red-500/20',
+            dot: 'bg-red-400 dark:bg-red-500'
+          }
         };
       }
 
@@ -151,7 +169,7 @@ export const LiveMarket = () => {
       <div className={`px-3 py-1.5 bg-gradient-to-r ${marketState.statusColor.bg}
                     rounded-full border ${marketState.statusColor.border}
                     flex items-center space-x-2 group transition-all duration-300
-                    hover:border-opacity-30`}
+                    hover:border-opacity-30 hover:shadow-sm`}
       >
         <div className={`w-1.5 h-1.5 rounded-full ${marketState.statusColor.dot}
                       shadow-lg animate-pulse group-hover:scale-110 transition-transform`} 
