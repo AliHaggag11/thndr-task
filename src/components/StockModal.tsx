@@ -281,7 +281,7 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
             </div>
 
             {/* Tab Content with Fixed Height */}
-            <div className="h-[400px] relative">
+            <div className="h-[400px] relative overflow-hidden">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab}
@@ -292,7 +292,7 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
                     duration: 0.2,
                     ease: "easeInOut"
                   }}
-                  className="absolute inset-0 overflow-y-auto"
+                  className="absolute inset-0"
                 >
                   {renderTabContent()}
                 </motion.div>
