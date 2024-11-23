@@ -2,13 +2,12 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback, useRef } from 'react';
 import { fetchStocks } from '../services/api';
 import { Stock, ApiResponse } from '../types';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const CardSkeleton = () => (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
     className="group relative bg-white/50 dark:bg-gray-800/30 rounded-2xl 
                 backdrop-blur-sm backdrop-saturate-150
                 border border-gray-100/50 dark:border-gray-700/30
