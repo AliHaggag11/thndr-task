@@ -194,24 +194,44 @@ export const PriceGraph = ({ stockSymbol }: PriceGraphProps) => {
       tooltip: {
         mode: 'index',
         intersect: false,
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
         titleColor: '#1F2937',
         bodyColor: '#1F2937',
         borderColor: 'rgba(209, 213, 219, 0.5)',
         borderWidth: 1,
-        padding: 12,
+        padding: {
+          top: 10,
+          right: 12,
+          bottom: 10,
+          left: 12
+        },
         cornerRadius: 8,
         titleFont: {
           size: 14,
+          family: "'Inter', sans-serif"
         },
         bodyFont: {
           size: 13,
+          family: "'Inter', sans-serif"
         },
         displayColors: false,
         callbacks: {
+          title: (tooltipItems) => {
+            const date = new Date(tooltipItems[0].label);
+            return date.toLocaleDateString('en-US', {
+              weekday: 'short',
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+              ...(selectedRange === '1D' && {
+                hour: '2-digit',
+                minute: '2-digit'
+              })
+            });
+          },
           label: function(context) {
             if (typeof context.parsed.y === 'number') {
-              return `$${context.parsed.y.toFixed(2)}`;
+              return `Price: $${context.parsed.y.toFixed(2)}`;
             }
             return '';
           },
@@ -222,16 +242,20 @@ export const PriceGraph = ({ stockSymbol }: PriceGraphProps) => {
       y: {
         grid: {
           color: 'rgba(156, 163, 175, 0.1)',
-          display: true,
         },
         ticks: {
           color: 'rgb(156, 163, 175)',
           font: {
-            size: 12,
+            size: 11,
+            family: "'Inter', sans-serif"
           },
+          padding: 8,
           callback: (value) => {
             if (typeof value === 'number') {
-              return `$${value.toFixed(0)}`;
+              return `$${value.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              })}`;
             }
             return '';
           },
@@ -247,9 +271,13 @@ export const PriceGraph = ({ stockSymbol }: PriceGraphProps) => {
         ticks: {
           color: 'rgb(156, 163, 175)',
           font: {
-            size: 12,
+            size: 11,
+            family: "'Inter', sans-serif"
           },
           maxRotation: 0,
+          padding: 8,
+          autoSkip: true,
+          maxTicksLimit: 6,
         },
         border: {
           display: false,
@@ -265,7 +293,21 @@ export const PriceGraph = ({ stockSymbol }: PriceGraphProps) => {
       line: {
         borderJoinStyle: 'round',
         borderCapStyle: 'round',
+        tension: 0.4,
       },
+      point: {
+        radius: 0,
+        hitRadius: 8,
+        hoverRadius: 4,
+      },
+    },
+    layout: {
+      padding: {
+        top: 20,
+        right: 20,
+        bottom: 10,
+        left: 10
+      }
     },
   };
 
@@ -275,52 +317,62 @@ export const PriceGraph = ({ stockSymbol }: PriceGraphProps) => {
     <div className="flex flex-col h-full">
       {/* Price Change Indicator */}
       {priceData && (
-        <div className="flex justify-center mb-2">
+        <div className="flex justify-between items-center px-4 mb-4">
           <div className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm font-medium
                         ${priceData.priceChange.isPositive 
                           ? 'bg-green-500/10 text-green-600 dark:text-green-400'
                           : 'bg-red-500/10 text-red-600 dark:text-red-400'}`}>
-            <span>
-              {priceData.priceChange.isPositive ? '+' : ''}
-              ${priceData.priceChange.value.toFixed(2)}
+            <span className="text-base font-semibold">
+              ${priceData.datasets[0].data[priceData.datasets[0].data.length - 1].toFixed(2)}
             </span>
-            <span className="text-xs opacity-75">
-              ({priceData.priceChange.isPositive ? '+' : ''}
-              {priceData.priceChange.percentage.toFixed(2)}%)
-            </span>
+            <div className="flex items-center space-x-1 text-xs opacity-90">
+              <span>
+                {priceData.priceChange.isPositive ? '+' : ''}
+                ${Math.abs(priceData.priceChange.value).toFixed(2)}
+              </span>
+              <span>
+                ({priceData.priceChange.isPositive ? '+' : ''}
+                {priceData.priceChange.percentage.toFixed(2)}%)
+              </span>
+            </div>
+          </div>
+          
+          {/* Time Range Selector */}
+          <div className="flex space-x-1 bg-gray-100/50 dark:bg-gray-800/50 rounded-lg p-1">
+            {timeRanges.map((range) => (
+              <button
+                key={range}
+                onClick={() => setSelectedRange(range)}
+                disabled={isLoading}
+                className={`px-3 py-1 rounded-md text-xs font-medium transition-all
+                         ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}
+                         ${selectedRange === range
+                           ? 'bg-white dark:bg-gray-700 text-light-accent dark:text-blue-400 shadow-sm'
+                           : 'text-gray-500 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-700/50'
+                         }`}
+              >
+                {range}
+              </button>
+            ))}
           </div>
         </div>
       )}
 
-      {/* Time Range Selector */}
-      <div className="flex justify-center space-x-2 px-4 py-2">
-        {timeRanges.map((range) => (
-          <button
-            key={range}
-            onClick={() => setSelectedRange(range)}
-            disabled={isLoading}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all
-                     ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}
-                     ${selectedRange === range
-                       ? 'bg-light-accent/10 dark:bg-blue-500/10 text-light-accent dark:text-blue-400'
-                       : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50'
-                     }`}
-          >
-            {range}
-          </button>
-        ))}
-      </div>
-
       {/* Graph Container */}
-      <div className="flex-1 relative min-h-[300px] px-4">
+      <div className="flex-1 relative min-h-[300px]">
         {isLoading ? (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-light-accent/20 
-                         dark:border-blue-500/20 border-t-light-accent dark:border-t-blue-500" />
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-50/30 dark:bg-gray-800/30 backdrop-blur-sm rounded-xl">
+            <div className="flex flex-col items-center space-y-3">
+              <div className="animate-spin rounded-full h-8 w-8 border-2 border-light-accent/20 
+                           dark:border-blue-500/20 border-t-light-accent dark:border-t-blue-500" />
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                Loading price data...
+              </span>
+            </div>
           </div>
         ) : error ? (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-red-500 text-sm text-center px-4">
+          <div className="absolute inset-0 flex items-center justify-center bg-red-50/30 dark:bg-red-900/10 backdrop-blur-sm rounded-xl">
+            <div className="text-red-500 text-sm text-center px-4 max-w-md">
               {error instanceof Error ? error.message : 'Failed to fetch price data'}
             </div>
           </div>
