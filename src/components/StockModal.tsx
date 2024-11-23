@@ -1,5 +1,5 @@
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
-import { FiX, FiGlobe, FiDollarSign, FiBarChart2, FiTrendingUp, FiInfo, FiClock, FiHash } from 'react-icons/fi';
+import { FiX, FiGlobe, FiDollarSign, FiBarChart2, FiTrendingUp, FiClock, FiHash } from 'react-icons/fi';
 import { Stock } from '../types';
 import { useEffect, useState } from 'react';
 import { toggleScroll } from '../utils/scroll';
