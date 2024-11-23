@@ -1,8 +1,9 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { fetchStocks } from '../services/api';
 import { Stock, ApiResponse } from '../types';
 import { motion } from 'framer-motion';
+import { StockModal } from './StockModal';
 
 const CardSkeleton = () => (
   <motion.div
@@ -94,6 +95,8 @@ export const StockList = ({ searchQuery }: { searchQuery: string }) => {
     observer.current.observe(node);
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
+  const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
+
   if (isLoading) {
     const columnCount = window.innerWidth < 640 ? 1 : 
                        window.innerWidth < 1024 ? 2 : 
@@ -133,7 +136,6 @@ export const StockList = ({ searchQuery }: { searchQuery: string }) => {
             const isLastElement = pageIndex === data.pages.length - 1 && 
                                 index === page.results.length - 1;
             const uniqueKey = `${pageIndex}-${stock.ticker}`;
-            const isMobile = window.innerWidth < 640;
             
             return (
               <motion.div
@@ -143,15 +145,17 @@ export const StockList = ({ searchQuery }: { searchQuery: string }) => {
                 animate={{ opacity: 1 }}
                 transition={{ 
                   duration: 0.2,
-                  delay: isMobile ? (index % 4) * 0.05 : (index % 4) * 0.1
+                  delay: window.innerWidth < 640 ? (index % 4) * 0.05 : (index % 4) * 0.1
                 }}
+                onClick={() => setSelectedStock(stock)}
                 className="group relative bg-white/90 dark:bg-gray-800/50 rounded-2xl 
                           backdrop-blur-sm backdrop-saturate-150
                           border border-gray-100/50 dark:border-gray-700/50
                           overflow-hidden will-change-transform
                           hover:shadow-lg hover:shadow-light-accent/5 dark:hover:shadow-blue-500/5
                           active:scale-[0.98] touch-manipulation
-                          transition-all duration-300 ease-out"
+                          transition-all duration-300 ease-out
+                          cursor-pointer"
               >
                 {/* Enhanced Card Content */}
                 <div className="relative p-6">
@@ -239,6 +243,13 @@ export const StockList = ({ searchQuery }: { searchQuery: string }) => {
           })
         )}
       </div>
+      
+      {/* Stock Modal */}
+      <StockModal 
+        stock={selectedStock!}
+        isOpen={!!selectedStock}
+        onClose={() => setSelectedStock(null)}
+      />
       
       {/* Simplified loading indicator */}
       {isFetchingNextPage && (

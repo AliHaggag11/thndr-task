@@ -1,17 +1,24 @@
 import { useState, useEffect } from 'react';
 import { FiArrowUp } from 'react-icons/fi';
+import { motion } from 'framer-motion';
+import { useModal } from '../context/ModalContext';
 
 export const ScrollToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const { isModalOpen } = useModal();
 
-  const toggleVisibility = () => {
-    if (window.pageYOffset > 300) {
-      setIsVisible(true);
-    } else {
-      setIsVisible(false);
-    }
-  };
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.pageYOffset > 300) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
+  }, []);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -20,42 +27,32 @@ export const ScrollToTop = () => {
     });
   };
 
-  useEffect(() => {
-    window.addEventListener('scroll', toggleVisibility);
-    return () => window.removeEventListener('scroll', toggleVisibility);
-  }, []);
-
   return (
     <>
       {isVisible && (
         <button
           onClick={scrollToTop}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          className="fixed sm:bottom-8 sm:right-8 bottom-6 right-6 z-50
-                    sm:p-4 p-3 rounded-xl
+          className={`fixed bottom-8 right-8 p-3 rounded-full 
                     bg-white/80 dark:bg-gray-800/80 
-                    backdrop-blur-md
+                    backdrop-blur-lg backdrop-saturate-150
                     border border-gray-200/50 dark:border-gray-700/50
                     shadow-lg hover:shadow-xl
-                    transform hover:-translate-y-1
+                    text-light-text-primary dark:text-gray-300
+                    hover:text-light-accent dark:hover:text-blue-400
+                    transform hover:-translate-y-1 hover:scale-110
                     transition-all duration-300 ease-out
-                    group"
+                    group z-50
+                    ${isModalOpen ? 'filter blur-sm pointer-events-none' : ''}`}
           aria-label="Scroll to top"
+          disabled={isModalOpen}
         >
-          <FiArrowUp 
-            className={`sm:w-5 sm:h-5 w-4 h-4 transition-all duration-300
-                     ${isHovered 
-                       ? 'text-light-accent dark:text-blue-400 transform -translate-y-0.5' 
-                       : 'text-light-text-primary dark:text-gray-300'}`}
-          />
+          <FiArrowUp className="w-5 h-5 transition-transform duration-300 
+                               group-hover:animate-bounce" />
           
-          {/* Subtle gradient hover effect */}
-          <div className="absolute inset-0 rounded-xl bg-gradient-to-t 
-                       from-light-accent/5 via-transparent to-transparent
-                       dark:from-blue-500/5 
-                       opacity-0 group-hover:opacity-100 
-                       transition-opacity duration-300" />
+          {/* Hover effect */}
+          <span className="absolute inset-0 rounded-full bg-gradient-to-r 
+                          from-light-accent/10 to-transparent dark:from-blue-500/10 
+                          opacity-0 group-hover:opacity-100 transition-opacity" />
         </button>
       )}
     </>
