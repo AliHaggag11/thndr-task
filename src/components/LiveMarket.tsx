@@ -26,8 +26,6 @@ export const LiveMarket = () => {
     }
   });
 
-  const [showTooltip, setShowTooltip] = useState(false);
-
   const getNextMarketOpen = (nyTime: Date): Date => {
     const nextOpen = new Date(nyTime);
     nextOpen.setHours(9, 30, 0, 0);
@@ -203,7 +201,7 @@ export const LiveMarket = () => {
           </span>
         </div>
 
-        {/* Enhanced Tooltip - Now showing from bottom */}
+        {/* Enhanced Tooltip */}
         <div className="absolute left-1/2 top-full -translate-x-1/2 mt-2
                      pointer-events-none opacity-0 group-hover:opacity-100
                      transition-all duration-200 z-50">
@@ -225,7 +223,7 @@ export const LiveMarket = () => {
                 hour12: true 
               })}
             </div>
-            {/* Tooltip Arrow - Now pointing up */}
+            {/* Tooltip Arrow */}
             <div className="absolute -top-1.5 left-1/2 -translate-x-1/2
                          w-3 h-3 bg-white dark:bg-gray-800 
                          border-l border-t border-gray-200 dark:border-gray-700
