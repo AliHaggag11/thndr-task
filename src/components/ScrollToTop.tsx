@@ -40,8 +40,8 @@ export const ScrollToTop = () => {
                     hover:text-light-accent dark:hover:text-blue-400
                     transform hover:-translate-y-1 hover:scale-110
                     transition-all duration-300 ease-out
-                    group z-50
-                    ${isModalOpen ? 'filter blur-sm pointer-events-none' : ''}
+                    group z-[50]
+                    ${isModalOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}
                     env(safe-area-inset-bottom, 24px)
                     env(safe-area-inset-right, 24px)`}
           aria-label="Scroll to top"
