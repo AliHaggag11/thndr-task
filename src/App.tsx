@@ -5,6 +5,7 @@ import { StockList } from './components/StockList';
 import { SplashScreen } from './components/SplashScreen';
 import { DarkModeToggle } from './components/DarkModeToggle';
 import { ScrollToTop } from './components/ScrollToTop';
+import { LiveMarket } from './components/LiveMarket';
 import { motion } from 'framer-motion';
 
 function App() {
@@ -62,7 +63,7 @@ function App() {
 
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between h-16">
-              {/* Logo and Live Market Section - Added margin for mobile */}
+              {/* Logo and Live Market Section */}
               <div className="flex items-center space-x-3 sm:space-x-6 mr-4 sm:mr-0">
                 <motion.div 
                   className="relative group"
@@ -101,32 +102,11 @@ function App() {
                   </div>
                 </motion.div>
 
-                {/* Live Market Badge */}
-                <motion.div 
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="hidden sm:block"
-                >
-                  <div className="px-3 py-1.5 bg-gradient-to-r from-green-400/10 to-green-500/5
-                              dark:from-green-500/10 dark:to-green-400/5
-                              rounded-full border border-green-400/20 dark:border-green-500/20
-                              flex items-center space-x-2 group transition-all duration-300
-                              hover:border-green-400/30 dark:hover:border-green-500/30
-                              hover:scale-105 cursor-pointer">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-400 dark:bg-green-500 
-                                shadow-lg shadow-green-400/20 dark:shadow-green-500/20
-                                animate-pulse group-hover:scale-110 transition-transform" />
-                    <span className="text-xs font-medium bg-gradient-to-r from-green-600 to-green-500 
-                                 dark:from-green-400 dark:to-green-500 bg-clip-text text-transparent
-                                 group-hover:from-green-500 group-hover:to-green-400">
-                      Live Market
-                    </span>
-                  </div>
-                </motion.div>
+                {/* Dynamic Live Market Component */}
+                <LiveMarket />
               </div>
 
-              {/* Search Section - Adjusted margins for mobile */}
+              {/* Search Section */}
               <motion.div 
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
