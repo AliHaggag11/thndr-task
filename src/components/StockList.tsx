@@ -5,6 +5,8 @@ import { Stock, ApiResponse } from '../types';
 import { motion } from 'framer-motion';
 import { FiTrendingUp, FiDollarSign, FiGlobe, FiBarChart } from 'react-icons/fi';
 import { StockModal } from './StockModal';
+import { Tour } from './Tour';
+import { HelpButton } from './HelpButton';
 
 const CardSkeleton = () => (
   <motion.div
@@ -41,6 +43,7 @@ const CardSkeleton = () => (
 
 export const StockList = ({ searchQuery, filters }: { searchQuery: string; filters?: any }) => {
   const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
+  const [showTour, setShowTour] = useState(false);
 
   const {
     data,
@@ -102,6 +105,8 @@ export const StockList = ({ searchQuery, filters }: { searchQuery: string; filte
 
   return (
     <div className="flex flex-col">
+      <Tour run={showTour} onFinish={() => setShowTour(false)} />
+      <HelpButton onStartTour={() => setShowTour(true)} />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 p-4">
         {data.pages.map((page: ApiResponse, pageIndex) =>
           page.results.map((stock: Stock, index: number) => {
@@ -120,8 +125,7 @@ export const StockList = ({ searchQuery, filters }: { searchQuery: string; filte
                   duration: 0.2,
                   delay: isMobile ? index * 0.05 : (index % 4) * 0.1
                 }}
-                onClick={() => setSelectedStock(stock)}
-                className="group relative bg-white/90 dark:bg-gray-800/50 rounded-xl 
+                className="stock-card group relative bg-white/90 dark:bg-gray-800/50 rounded-xl 
                           backdrop-blur-sm backdrop-saturate-150
                           border border-gray-100/50 dark:border-gray-700/50
                           overflow-hidden will-change-transform
@@ -129,6 +133,7 @@ export const StockList = ({ searchQuery, filters }: { searchQuery: string; filte
                           active:scale-[0.98] touch-manipulation
                           transition-all duration-300 ease-out
                           cursor-pointer"
+                onClick={() => setSelectedStock(stock)}
               >
                 <div className="relative p-4">
                   {/* Header */}

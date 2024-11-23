@@ -108,30 +108,6 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
                 </p>
               </div>
             </div>
-
-            {/* About Section */}
-            <div className="space-y-3 pb-safe">
-              <div className="p-4 rounded-xl bg-gray-50/50 dark:bg-gray-700/50
-                           border border-gray-100/50 dark:border-gray-600/50
-                           hover:bg-gray-50/70 dark:hover:bg-gray-700/70
-                           transition-colors duration-200">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-2">
-                    <FiInfo className="w-4 h-4 text-light-accent dark:text-blue-400" />
-                    <span className="text-sm font-medium text-light-text-secondary dark:text-gray-400">
-                      About
-                    </span>
-                  </div>
-                  <span className="text-xs text-light-text-secondary dark:text-gray-400">
-                    {stock.primary_exchange}
-                  </span>
-                </div>
-                <p className="text-sm text-light-text-primary dark:text-white leading-relaxed">
-                  {stock.name} ({stock.ticker}) is listed on the {stock.primary_exchange} exchange.
-                  It trades in {stock.currency_name} currency as a {stock.type} instrument.
-                </p>
-              </div>
-            </div>
           </div>
         );
       case 'graph':

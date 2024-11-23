@@ -99,12 +99,12 @@ function App() {
                   <LiveMarket />
                 </div>
 
-                {/* Enhanced Search Section */}
+                {/* Enhanced Search Section with adjusted width */}
                 <motion.div 
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="flex-1 max-w-2xl mx-4 sm:mx-8"
+                  className="flex-1 max-w-3xl mx-4 sm:mx-6"
                 >
                   <div className="relative group">
                     <div className="absolute -inset-1.5 bg-gradient-to-r from-light-accent/5 via-light-accent/10 to-light-accent/5 
@@ -119,11 +119,11 @@ function App() {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="relative group"
+                  className="relative group ml-2"
                 >
                   <div className="absolute -inset-2 bg-gradient-to-r from-light-accent/10 via-light-accent/5 to-transparent 
                                dark:from-blue-500/10 dark:via-blue-500/5 rounded-xl blur opacity-0 
-                               group-hover:opacity-100 transition-all duration-500" />
+                               group-hover:opacity-100 transition-opacity" />
                   <DarkModeToggle />
                 </motion.div>
               </div>

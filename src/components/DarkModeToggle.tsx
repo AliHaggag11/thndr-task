@@ -105,7 +105,7 @@ export const DarkModeToggle = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="theme-toggle relative">
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}

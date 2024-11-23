@@ -48,7 +48,7 @@ export const SearchBar = ({ onSearch }: Props) => {
   }, []);
 
   return (
-    <div className="relative group">
+    <div className="search-bar relative flex items-center w-full">
       {/* Enhanced Glow Effect */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -59,7 +59,7 @@ export const SearchBar = ({ onSearch }: Props) => {
       />
 
       {/* Main Container */}
-      <div className="relative flex items-center">
+      <div className="relative flex items-center w-full">
         {/* Search Icon */}
         <div className="absolute left-3 sm:left-4 z-10">
           <FiSearch 
@@ -79,7 +79,7 @@ export const SearchBar = ({ onSearch }: Props) => {
           onChange={handleChange}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          className="w-full pl-9 sm:pl-11 pr-16 sm:pr-24 py-2.5 
+          className="w-full pl-9 sm:pl-11 pr-16 sm:pr-20 py-2.5 
                   bg-white/80 dark:bg-gray-900/50
                   backdrop-blur-md backdrop-saturate-150
                   border border-gray-200/50 dark:border-gray-700/50 
@@ -104,7 +104,7 @@ export const SearchBar = ({ onSearch }: Props) => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={clearSearch}
-              className="absolute right-10 sm:right-14 p-1.5 rounded-full
+              className="absolute right-10 sm:right-12 p-1.5 rounded-full
                       bg-gray-100/80 dark:bg-gray-800/80
                       hover:bg-light-accent/10 dark:hover:bg-blue-500/10
                       text-light-text-secondary dark:text-gray-400

@@ -156,7 +156,7 @@ export const LiveMarket = () => {
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.2 }}
-      className="hidden sm:block relative group"
+      className="hidden sm:block relative group market-status"
     >
       <div className={`relative px-3 py-1.5 
                     bg-gradient-to-r ${marketState.statusColor.bg}
