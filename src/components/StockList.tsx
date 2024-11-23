@@ -102,7 +102,7 @@ export const StockList = ({ searchQuery, filters }: { searchQuery: string; filte
 
   return (
     <div className="flex flex-col">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5 p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 p-4">
         {data.pages.map((page: ApiResponse, pageIndex) =>
           page.results.map((stock: Stock, index: number) => {
             const isLastElement = pageIndex === data.pages.length - 1 && 
@@ -121,7 +121,7 @@ export const StockList = ({ searchQuery, filters }: { searchQuery: string; filte
                   delay: isMobile ? index * 0.05 : (index % 4) * 0.1
                 }}
                 onClick={() => setSelectedStock(stock)}
-                className="group relative bg-white/90 dark:bg-gray-800/50 rounded-2xl 
+                className="group relative bg-white/90 dark:bg-gray-800/50 rounded-xl 
                           backdrop-blur-sm backdrop-saturate-150
                           border border-gray-100/50 dark:border-gray-700/50
                           overflow-hidden will-change-transform
@@ -130,12 +130,12 @@ export const StockList = ({ searchQuery, filters }: { searchQuery: string; filte
                           transition-all duration-300 ease-out
                           cursor-pointer"
               >
-                <div className="relative p-6">
+                <div className="relative p-4">
                   {/* Header */}
-                  <div className="flex justify-between items-start mb-4">
+                  <div className="flex justify-between items-start mb-3">
                     <div className="flex flex-col">
-                      <div className="flex items-center space-x-3">
-                        <h3 className="text-2xl font-bold bg-clip-text text-transparent 
+                      <div className="flex items-center space-x-2">
+                        <h3 className="text-xl font-bold bg-clip-text text-transparent 
                                    bg-gradient-to-r from-light-text-primary to-light-text-primary/90
                                    dark:from-white dark:to-gray-300
                                    group-hover:from-light-accent group-hover:to-light-accent/90
