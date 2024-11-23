@@ -314,10 +314,10 @@ export const PriceGraph = ({ stockSymbol }: PriceGraphProps) => {
   const timeRanges = ['1D', '1W', '1M', '3M', '1Y'] as const;
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col w-full h-full">
       {/* Price Change Indicator */}
       {priceData && (
-        <div className="flex justify-between items-center px-4 mb-4">
+        <div className="flex justify-between items-center mb-4 px-0">
           <div className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm font-medium
                         ${priceData.priceChange.isPositive 
                           ? 'bg-green-500/10 text-green-600 dark:text-green-400'
@@ -359,7 +359,7 @@ export const PriceGraph = ({ stockSymbol }: PriceGraphProps) => {
       )}
 
       {/* Graph Container */}
-      <div className="flex-1 relative min-h-[300px]">
+      <div className="flex-1 relative min-h-[250px] w-full overflow-hidden">
         {isLoading ? (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-50/30 dark:bg-gray-800/30 backdrop-blur-sm rounded-xl">
             <div className="flex flex-col items-center space-y-3">
@@ -378,7 +378,11 @@ export const PriceGraph = ({ stockSymbol }: PriceGraphProps) => {
           </div>
         ) : (
           <div className="h-full w-full">
-            {priceData && <Line data={priceData} options={options} />}
+            {priceData && (
+              <div className="h-full w-full overflow-hidden">
+                <Line data={priceData} options={options} />
+              </div>
+            )}
           </div>
         )}
       </div>
