@@ -54,12 +54,13 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: '100%' }}
             transition={{ duration: 0.3 }}
-            className="w-full sm:w-auto sm:max-w-2xl h-[90vh] sm:h-auto sm:max-h-[90vh] 
+            className="w-full sm:w-auto sm:max-w-2xl max-h-[80vh] sm:h-auto sm:max-h-[90vh] 
                      overflow-y-auto bg-white dark:bg-gray-800 
                      rounded-t-2xl sm:rounded-2xl shadow-xl 
                      border-t border-gray-200/50 dark:border-gray-700/50 sm:border
                      backdrop-blur-xl backdrop-saturate-150
-                     will-change-transform"
+                     will-change-transform
+                     mt-auto sm:mt-0"
           >
             {/* Drag Handle */}
             <div className="flex justify-center p-2 sticky top-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl z-10">
