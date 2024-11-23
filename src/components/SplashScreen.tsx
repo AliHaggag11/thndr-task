@@ -3,74 +3,51 @@ import { useState, useEffect } from 'react';
 import { AuroraBackground } from './ui/AuroraBackground';
 import { fetchStocks } from '../services/api';
 
+interface InitializationState {
+  isInitialized: boolean;
+  error: boolean;
+  message: string;
+}
+
 export const SplashScreen = () => {
-  const [initializationState, setInitializationState] = useState({
+  const [initializationState, setInitializationState] = useState<InitializationState>({
     isInitialized: false,
-    message: 'Connecting to Market Data...',
-    error: false
+    error: false,
+    message: 'Initializing market data...'
   });
 
   useEffect(() => {
     const initializeData = async () => {
       try {
-        // First connection attempt
-        setInitializationState(prev => ({
-          ...prev,
-          message: 'Establishing Connection...'
-        }));
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Simulate initialization delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Trigger haptic feedback on mobile devices
+        if ('vibrate' in navigator) {
+          navigator.vibrate([50]); // Short vibration pulse
+        }
 
-        // Test API connection
-        setInitializationState(prev => ({
-          ...prev,
-          message: 'Connecting to Market Data...'
-        }));
-        await fetchStocks('', undefined);
-        await new Promise(resolve => setTimeout(resolve, 800));
-
-        // Initialize cache
-        setInitializationState(prev => ({
-          ...prev,
-          message: 'Initializing Market Data...'
-        }));
-        await new Promise(resolve => setTimeout(resolve, 700));
-
-        // Show initialization message for a moment before completing
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        // Success state
         setInitializationState({
           isInitialized: true,
-          message: 'Market Data Initialized',
-          error: false
+          error: false,
+          message: 'Market data initialized'
         });
-
-        // Extended delay to ensure the success state is visible
-        await new Promise(resolve => setTimeout(resolve, 3000));
       } catch (error) {
         setInitializationState({
           isInitialized: false,
-          message: 'Failed to Initialize Market Data',
-          error: true
+          error: true,
+          message: 'Failed to initialize market data'
         });
-        // Add delay even for error state
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Error vibration pattern
+        if ('vibrate' in navigator) {
+          navigator.vibrate([100, 100, 100]); // Error pattern: three short pulses
+        }
       }
     };
 
     initializeData();
   }, []);
-
-  // Signal to parent component that initialization is complete
-  useEffect(() => {
-    if (initializationState.isInitialized) {
-      // Notify parent after the success state has been shown
-      const timer = setTimeout(() => {
-        // You could emit an event or call a callback here if needed
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [initializationState.isInitialized]);
 
   return (
     <AuroraBackground>
