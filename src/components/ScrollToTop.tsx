@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { FiArrowUp } from 'react-icons/fi';
-import { motion } from 'framer-motion';
 import { useModal } from '../context/ModalContext';
 
 export const ScrollToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
   const { isModalOpen } = useModal();
-
+ 
   useEffect(() => {
     const toggleVisibility = () => {
       if (window.pageYOffset > 300) {
