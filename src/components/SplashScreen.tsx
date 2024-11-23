@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { AuroraBackground } from './ui/AuroraBackground';
-import { fetchStocks } from '../services/api';
 
 interface InitializationState {
   isInitialized: boolean;
