@@ -45,7 +45,7 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
     switch (activeTab) {
       case 'info':
         return (
-          <div className="p-4 space-y-4">
+          <div className="p-4 space-y-4 h-full overflow-y-auto">
             {/* Main Info Grid */}
             <div className="grid grid-cols-2 gap-3">
               <div className="p-4 rounded-xl bg-gray-50/50 dark:bg-gray-700/50
@@ -109,8 +109,8 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
               </div>
             </div>
 
-            {/* Additional Info */}
-            <div className="space-y-3">
+            {/* About Section */}
+            <div className="space-y-3 pb-safe">
               <div className="p-4 rounded-xl bg-gray-50/50 dark:bg-gray-700/50
                            border border-gray-100/50 dark:border-gray-600/50
                            hover:bg-gray-50/70 dark:hover:bg-gray-700/70
@@ -136,7 +136,7 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
         );
       case 'graph':
         return (
-          <div className="p-4 w-full overflow-hidden">
+          <div className="p-4 w-full h-full overflow-hidden">
             <PriceGraph stockSymbol={stock.ticker} />
           </div>
         );
@@ -160,7 +160,7 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: '100%' }}
             transition={{ duration: 0.3 }}
-            className="w-full sm:w-[600px] max-h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] sm:max-h-[85vh]
+            className="w-full sm:w-[600px] h-[85vh] sm:h-auto sm:max-h-[85vh]
                      bg-white dark:bg-gray-800 
                      rounded-t-2xl sm:rounded-2xl shadow-xl 
                      border-t border-gray-200/50 dark:border-gray-700/50 sm:border
@@ -283,7 +283,7 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
             </div>
 
             {/* Tab Content */}
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 min-h-0">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab}
@@ -294,7 +294,7 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
                     duration: 0.2,
                     ease: "easeInOut"
                   }}
-                  className="h-full w-full"
+                  className="h-full"
                 >
                   {renderTabContent()}
                 </motion.div>
