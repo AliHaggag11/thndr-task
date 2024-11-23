@@ -15,16 +15,32 @@ export const SplashScreen = () => {
     message: 'Initializing market data...'
   });
 
+  // Separate function to handle vibration with better browser support
+  const triggerHapticFeedback = (pattern: number[]) => {
+    try {
+      // Check if vibration is supported and enabled
+      if ('vibrate' in navigator && typeof navigator.vibrate === 'function') {
+        // Some browsers need user interaction first
+        document.addEventListener('touchstart', () => {
+          navigator.vibrate(pattern);
+        }, { once: true });
+        
+        // Try to vibrate anyway in case there was a previous interaction
+        navigator.vibrate(pattern);
+      }
+    } catch (error) {
+      console.log('Haptic feedback not available');
+    }
+  };
+
   useEffect(() => {
     const initializeData = async () => {
       try {
         // Simulate initialization delay
         await new Promise(resolve => setTimeout(resolve, 2000));
         
-        // Trigger haptic feedback on mobile devices
-        if ('vibrate' in navigator) {
-          navigator.vibrate([50]); // Short vibration pulse
-        }
+        // Success vibration - two short pulses
+        triggerHapticFeedback([50, 30, 50]);
 
         setInitializationState({
           isInitialized: true,
@@ -38,14 +54,24 @@ export const SplashScreen = () => {
           message: 'Failed to initialize market data'
         });
         
-        // Error vibration pattern
-        if ('vibrate' in navigator) {
-          navigator.vibrate([100, 100, 100]); // Error pattern: three short pulses
-        }
+        // Error vibration - three longer pulses
+        triggerHapticFeedback([100, 50, 100, 50, 100]);
       }
     };
 
     initializeData();
+
+    // Try to request permission for vibration on iOS (might not work)
+    if (typeof DeviceMotionEvent !== 'undefined' && 
+        typeof (DeviceMotionEvent as any).requestPermission === 'function') {
+      (DeviceMotionEvent as any).requestPermission()
+        .then((response: string) => {
+          if (response === 'granted') {
+            // Permission granted
+          }
+        })
+        .catch(console.error);
+    }
   }, []);
 
   return (
