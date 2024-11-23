@@ -1,9 +1,10 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { FiX, FiTrendingUp, FiDollarSign, FiBarChart2, FiGlobe } from 'react-icons/fi';
 import { Stock } from '../types';
 import { useEffect } from 'react';
 import { toggleScroll } from '../utils/scroll';
 import { useModal } from '../context/ModalContext';
+import { ShareButton } from './ShareButton';
 
 interface StockModalProps {
   stock: Stock;
@@ -30,6 +31,12 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
     }
   };
 
+  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    if (info.offset.y > 100) {
+      onClose();
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -40,6 +47,10 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
         >
           {/* Modal Content */}
           <motion.div
+            drag="y"
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={0.2}
+            onDragEnd={handleDragEnd}
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -49,19 +60,27 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
                      border border-gray-200/50 dark:border-gray-700/50
                      backdrop-blur-xl backdrop-saturate-150"
           >
+            {/* Drag Handle */}
+            <div className="flex justify-center p-2">
+              <div className="w-12 h-1 rounded-full bg-gray-200 dark:bg-gray-700" />
+            </div>
+
             {/* Modal Header */}
             <div className="relative p-6 border-b border-gray-200/50 dark:border-gray-700/50">
-              {/* Close Button */}
-              <button
-                onClick={onClose}
-                className="absolute top-6 right-6 p-2 rounded-xl
-                       bg-gray-100/50 dark:bg-gray-700/50
-                       hover:bg-gray-200/50 dark:hover:bg-gray-600/50
-                       text-gray-500 dark:text-gray-400
-                       transition-colors duration-200"
-              >
-                <FiX className="w-5 h-5" />
-              </button>
+              {/* Actions Row */}
+              <div className="absolute top-6 right-6 flex items-center space-x-2">
+                <ShareButton stock={stock} />
+                <button
+                  onClick={onClose}
+                  className="p-2 rounded-xl
+                         bg-gray-100/50 dark:bg-gray-700/50
+                         hover:bg-gray-200/50 dark:hover:bg-gray-600/50
+                         text-gray-500 dark:text-gray-400
+                         transition-colors duration-200"
+                >
+                  <FiX className="w-5 h-5" />
+                </button>
+              </div>
 
               {/* Title and Status */}
               <div>
@@ -78,7 +97,7 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
                     Active
                   </span>
                 </div>
-                <p className="text-light-text-secondary dark:text-gray-400 text-sm pr-12">
+                <p className="text-light-text-secondary dark:text-gray-400 text-sm pr-24">
                   {stock.name}
                 </p>
               </div>
