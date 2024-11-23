@@ -133,6 +133,7 @@ export const StockList = ({ searchQuery }: { searchQuery: string }) => {
             const isLastElement = pageIndex === data.pages.length - 1 && 
                                 index === page.results.length - 1;
             const uniqueKey = `${pageIndex}-${stock.ticker}`;
+            const isMobile = window.innerWidth < 640;
             
             return (
               <motion.div
@@ -142,99 +143,96 @@ export const StockList = ({ searchQuery }: { searchQuery: string }) => {
                 animate={{ opacity: 1 }}
                 transition={{ 
                   duration: 0.2,
-                  // Reduced stagger delay for mobile
-                  delay: window.innerWidth < 640 ? (index % 4) * 0.05 : (index % 4) * 0.1
+                  delay: isMobile ? (index % 4) * 0.05 : (index % 4) * 0.1
                 }}
-                className="group relative bg-white dark:bg-gray-800/50 rounded-2xl 
+                className="group relative bg-white/90 dark:bg-gray-800/50 rounded-2xl 
                           backdrop-blur-sm backdrop-saturate-150
-                          border border-gray-100 dark:border-gray-700/50
+                          border border-gray-100/50 dark:border-gray-700/50
                           overflow-hidden will-change-transform
-                          hover:shadow-lg hover:shadow-light-accent/10 dark:hover:shadow-blue-500/10
+                          hover:shadow-lg hover:shadow-light-accent/5 dark:hover:shadow-blue-500/5
                           active:scale-[0.98] touch-manipulation
-                          transition-[transform,shadow] duration-300 ease-out"
+                          transition-all duration-300 ease-out"
               >
-                {/* Simplified gradient effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-light-accent/5 to-transparent 
-                              dark:from-blue-500/5 opacity-0 group-hover:opacity-100 
-                              transition-opacity duration-300" />
-
+                {/* Enhanced Card Content */}
                 <div className="relative p-6">
                   {/* Header Section */}
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex flex-col">
-                      <span className="text-2xl font-bold bg-clip-text text-transparent 
-                                     bg-gradient-to-r from-light-text-primary to-light-text-primary/80
-                                     dark:from-white dark:to-gray-300 mb-1 
-                                     group-hover:from-light-accent group-hover:to-light-accent/80
+                      {/* Ticker with Enhanced Styling */}
+                      <div className="flex items-center space-x-2">
+                        <span className="text-2xl font-bold bg-clip-text text-transparent 
+                                     bg-gradient-to-r from-light-text-primary to-light-text-primary/90
+                                     dark:from-white dark:to-gray-300
+                                     group-hover:from-light-accent group-hover:to-light-accent/90
                                      dark:group-hover:from-blue-400 dark:group-hover:to-blue-500 
                                      transition-all duration-300">
-                        {stock.ticker}
-                      </span>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-xs text-light-text-secondary dark:text-gray-400 font-medium">
+                          {stock.ticker}
+                        </span>
+                      </div>
+
+                      {/* Exchange & Currency with Better Layout */}
+                      <div className="flex items-center mt-2 space-x-2">
+                        <span className="text-xs px-2 py-1 rounded-md
+                                     bg-light-secondary/50 dark:bg-gray-700/50
+                                     text-light-text-secondary dark:text-gray-400 
+                                     font-medium">
                           {stock.primary_exchange}
                         </span>
-                        <span className="w-1 h-1 rounded-full bg-light-text-secondary/30 dark:bg-gray-500" />
-                        <span className="text-xs px-2 py-0.5 bg-light-accent/10 dark:bg-blue-500/10 
-                                       text-light-accent dark:text-blue-400 rounded-full font-medium">
+                        <span className="text-xs px-2 py-1 rounded-md
+                                     bg-light-accent/5 dark:bg-blue-500/5
+                                     text-light-accent dark:text-blue-400 
+                                     font-medium">
                           {stock.currency_name}
                         </span>
                       </div>
                     </div>
-                    
-                    {/* Market Status Indicator */}
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 rounded-full bg-green-400 dark:bg-green-500 
-                                    shadow-sm shadow-green-500/20 mr-2 animate-pulse" />
-                      <span className="text-xs text-light-text-secondary dark:text-gray-400">
-                        Active
-                      </span>
-                    </div>
                   </div>
 
-                  {/* Company Name with Gradient Border */}
-                  <div className="mb-6 pb-4 border-b border-gray-100 dark:border-gray-700/50">
+                  {/* Company Name with Better Typography */}
+                  <div className="mb-6 pb-4 border-b border-gray-100/50 dark:border-gray-700/50">
                     <h3 className="text-sm text-light-text-primary dark:text-gray-200 
                                  line-clamp-2 font-medium leading-relaxed">
                       {stock.name}
                     </h3>
                   </div>
 
-                  {/* Details Grid with Icons */}
+                  {/* Details Grid with Enhanced Layout */}
                   <div className="grid grid-cols-2 gap-6">
                     <div className="flex flex-col space-y-1.5">
-                      <span className="text-xs text-light-text-secondary dark:text-gray-400 
-                                     flex items-center space-x-1">
-                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                                d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                        <span>Market</span>
+                      <span className="text-xs text-light-text-secondary/80 dark:text-gray-400/80 
+                                   font-medium">
+                        Market
                       </span>
-                      <span className="text-sm font-medium text-light-text-primary dark:text-white">
+                      <span className="text-sm font-medium text-light-text-primary dark:text-white
+                                   group-hover:text-light-accent dark:group-hover:text-blue-400
+                                   transition-colors duration-300">
                         {stock.market}
                       </span>
                     </div>
                     <div className="flex flex-col space-y-1.5">
-                      <span className="text-xs text-light-text-secondary dark:text-gray-400 
-                                     flex items-center space-x-1">
-                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                        <span>Type</span>
+                      <span className="text-xs text-light-text-secondary/80 dark:text-gray-400/80 
+                                   font-medium">
+                        Type
                       </span>
-                      <span className="text-sm font-medium text-light-text-primary dark:text-white">
+                      <span className="text-sm font-medium text-light-text-primary dark:text-white
+                                   group-hover:text-light-accent dark:group-hover:text-blue-400
+                                   transition-colors duration-300">
                         {stock.type}
                       </span>
                     </div>
                   </div>
 
-                  {/* Interactive Hover Effect */}
-                  <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r 
-                                from-light-accent/0 via-light-accent to-light-accent/0
-                                dark:from-blue-500/0 dark:via-blue-500 dark:to-blue-500/0
-                                opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {/* Enhanced Hover Effects */}
+                  <div className="absolute inset-0 bg-gradient-to-br 
+                              from-light-accent/[0.02] to-transparent
+                              dark:from-blue-500/[0.02] opacity-0 
+                              group-hover:opacity-100 transition-opacity" />
+                  
+                  {/* Bottom Gradient Line */}
+                  <div className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r 
+                              from-transparent via-light-accent/30 to-transparent
+                              dark:via-blue-500/30 opacity-0 group-hover:opacity-100 
+                              transition-opacity duration-300" />
                 </div>
               </motion.div>
             );
