@@ -11,49 +11,69 @@ export default {
         sans: ['Montserrat', 'system-ui', 'sans-serif'],
       },
       colors: {
-        // Light mode colors - much softer, more muted palette
         light: {
-          primary: '#f0f1f5',    // Even softer blue-gray
-          secondary: '#e5e7eb',  // Muted gray
-          accent: '#4f46e5',     // Indigo that works in both modes
-          surface: '#f5f6f9',    // Very subtle blue-gray tint
-          card: 'rgba(248,249,252,0.7)', // More muted translucent card
+          primary: '#f3f4f8',    
+          secondary: '#e8eaf2',  
+          accent: '#4f46e5',     
+          surface: '#eef0f5',    
+          card: 'rgba(243,244,248,0.7)', 
         },
-        // Text colors for light mode - softer contrast
         'light-text': {
-          primary: '#374151',    // Softer dark blue-gray
-          secondary: '#6b7280',  // Very muted text
+          primary: '#2c3242',    
+          secondary: '#5a6377',  
         },
-        // Dark mode colors - maintaining existing scheme
         dark: {
-          primary: '#0f172a',    // Slate-900
-          secondary: '#1e293b',  // Slate-800
-          accent: '#4f46e5',     // Matching indigo
-          surface: '#1e293b',    // Slate-800
-          card: 'rgba(30, 41, 59, 0.7)', // Translucent slate
+          primary: '#0f172a',    
+          secondary: '#1e293b',  
+          accent: '#4f46e5',     
+          surface: '#1e293b',    
+          card: 'rgba(30, 41, 59, 0.7)', 
         },
-        // Shared gradient colors - more muted
         gradient: {
-          start: '#4f46e5',      // Indigo
-          middle: '#6366f1',     // Lighter indigo
-          end: '#818cf8',        // Even lighter indigo
+          start: '#4f46e5',      
+          middle: '#6366f1',     
+          end: '#818cf8',        
         }
       },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'glass-light': 'linear-gradient(180deg, rgba(248, 249, 252, 0.06) 0%, rgba(248, 249, 252, 0) 100%)',
-        'glass-dark': 'linear-gradient(180deg, rgba(30, 41, 59, 0.08) 0%, rgba(30, 41, 59, 0) 100%)',
+      animation: {
+        aurora: "aurora 60s linear infinite",
       },
-      boxShadow: {
-        'glass-light': '0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
-        'glass-dark': '0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1)',
+      keyframes: {
+        aurora: {
+          from: {
+            backgroundPosition: "50% 50%, 50% 50%",
+          },
+          to: {
+            backgroundPosition: "350% 50%, 350% 50%",
+          },
+        },
       },
-      opacity: {
-        '15': '0.15',
-        '85': '0.85',
-      }
     },
   },
-  plugins: [],
-}
+  plugins: [
+    function ({ addBase, theme }) {
+      let allColors = {};
+      const colors = theme('colors');
+      
+      // Manually flatten the color palette
+      Object.entries(colors).forEach(([key, value]) => {
+        if (typeof value === 'object') {
+          Object.entries(value).forEach(([subKey, color]) => {
+            allColors[`${key}-${subKey}`] = color;
+          });
+        } else {
+          allColors[key] = value;
+        }
+      });
+
+      const colorVariables = Object.fromEntries(
+        Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+      );
+
+      addBase({
+        ':root': colorVariables,
+      });
+    },
+  ],
+};
 

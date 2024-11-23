@@ -1,13 +1,10 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { AuroraBackground } from './ui/AuroraBackground';
 import { fetchStocks } from '../services/api';
 
 export const SplashScreen = () => {
-  const [initializationState, setInitializationState] = useState<{
-    isInitialized: boolean;
-    message: string;
-    error: boolean;
-  }>({
+  const [initializationState, setInitializationState] = useState({
     isInitialized: false,
     message: 'Connecting to Market Data...',
     error: false
@@ -76,36 +73,7 @@ export const SplashScreen = () => {
   }, [initializationState.isInitialized]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 
-                    flex flex-col items-center justify-center relative overflow-hidden">
-      {/* Enhanced Background Patterns */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Primary Gradient */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 0.15, scale: 1 }}
-          transition={{ duration: 2, ease: "easeOut" }}
-          className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(56,189,248,0.13),transparent_70%)]" 
-        />
-        {/* Secondary Gradient */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 0.15, scale: 1 }}
-          transition={{ duration: 2, delay: 0.2, ease: "easeOut" }}
-          className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(59,130,246,0.13),transparent_70%)]"
-        />
-        {/* Animated Grid with Fade Effect */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.07 }}
-          transition={{ duration: 1.5 }}
-          className="absolute inset-0 bg-[url('/grid.svg')] bg-repeat"
-        >
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-950 via-transparent to-gray-950" />
-        </motion.div>
-      </div>
-
-      {/* Main content container */}
+    <AuroraBackground>
       <div className="flex flex-col items-center justify-between min-h-screen w-full 
                     py-8 sm:py-0 relative">
         {/* Logo and content section */}
@@ -306,6 +274,6 @@ export const SplashScreen = () => {
           </div>
         </motion.div>
       </div>
-    </div>
+    </AuroraBackground>
   );
 }; 
