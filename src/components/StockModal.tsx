@@ -1,10 +1,11 @@
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { FiX, FiGlobe, FiDollarSign, FiBarChart2, FiTrendingUp, FiInfo, FiClock, FiHash } from 'react-icons/fi';
 import { Stock } from '../types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toggleScroll } from '../utils/scroll';
 import { useModal } from '../context/ModalContext';
 import { ShareButton } from './ShareButton';
+import { PriceGraph } from './PriceGraph'
 
 interface StockModalProps {
   stock: Stock;
@@ -12,8 +13,11 @@ interface StockModalProps {
   onClose: () => void;
 }
 
+type TabType = 'info' | 'graph';
+
 export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
   const { setIsModalOpen } = useModal();
+  const [activeTab, setActiveTab] = useState<TabType>('info');
 
   useEffect(() => {
     setIsModalOpen(isOpen);
@@ -37,6 +41,108 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
     }
   };
 
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'info':
+        return (
+          <div className="p-4 space-y-4">
+            {/* Main Info Grid */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-4 rounded-xl bg-gray-50/50 dark:bg-gray-700/50
+                           border border-gray-100/50 dark:border-gray-600/50
+                           hover:bg-gray-50/70 dark:hover:bg-gray-700/70
+                           group transition-all duration-200">
+                <div className="flex items-center space-x-2 mb-2">
+                  <FiGlobe className="w-4 h-4 text-light-accent dark:text-blue-400" />
+                  <span className="text-sm font-medium text-light-text-secondary dark:text-gray-400">
+                    Exchange
+                  </span>
+                </div>
+                <p className="text-light-text-primary dark:text-white font-medium">
+                  {stock.primary_exchange}
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-gray-50/50 dark:bg-gray-700/50
+                           border border-gray-100/50 dark:border-gray-600/50
+                           hover:bg-gray-50/70 dark:hover:bg-gray-700/70
+                           group transition-all duration-200">
+                <div className="flex items-center space-x-2 mb-2">
+                  <FiDollarSign className="w-4 h-4 text-light-accent dark:text-blue-400" />
+                  <span className="text-sm font-medium text-light-text-secondary dark:text-gray-400">
+                    Currency
+                  </span>
+                </div>
+                <p className="text-light-text-primary dark:text-white font-medium">
+                  {stock.currency_name}
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-gray-50/50 dark:bg-gray-700/50
+                           border border-gray-100/50 dark:border-gray-600/50
+                           hover:bg-gray-50/70 dark:hover:bg-gray-700/70
+                           group transition-all duration-200">
+                <div className="flex items-center space-x-2 mb-2">
+                  <FiBarChart2 className="w-4 h-4 text-light-accent dark:text-blue-400" />
+                  <span className="text-sm font-medium text-light-text-secondary dark:text-gray-400">
+                    Market
+                  </span>
+                </div>
+                <p className="text-light-text-primary dark:text-white font-medium">
+                  {stock.market}
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-gray-50/50 dark:bg-gray-700/50
+                           border border-gray-100/50 dark:border-gray-600/50
+                           hover:bg-gray-50/70 dark:hover:bg-gray-700/70
+                           group transition-all duration-200">
+                <div className="flex items-center space-x-2 mb-2">
+                  <FiTrendingUp className="w-4 h-4 text-light-accent dark:text-blue-400" />
+                  <span className="text-sm font-medium text-light-text-secondary dark:text-gray-400">
+                    Type
+                  </span>
+                </div>
+                <p className="text-light-text-primary dark:text-white font-medium">
+                  {stock.type}
+                </p>
+              </div>
+            </div>
+
+            {/* Additional Info */}
+            <div className="space-y-3">
+              <div className="p-4 rounded-xl bg-gray-50/50 dark:bg-gray-700/50
+                           border border-gray-100/50 dark:border-gray-600/50
+                           hover:bg-gray-50/70 dark:hover:bg-gray-700/70
+                           transition-colors duration-200">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center space-x-2">
+                    <FiInfo className="w-4 h-4 text-light-accent dark:text-blue-400" />
+                    <span className="text-sm font-medium text-light-text-secondary dark:text-gray-400">
+                      About
+                    </span>
+                  </div>
+                  <span className="text-xs text-light-text-secondary dark:text-gray-400">
+                    {stock.primary_exchange}
+                  </span>
+                </div>
+                <p className="text-sm text-light-text-primary dark:text-white leading-relaxed">
+                  {stock.name} ({stock.ticker}) is listed on the {stock.primary_exchange} exchange.
+                  It trades in {stock.currency_name} currency as a {stock.type} instrument.
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      case 'graph':
+        return (
+          <div className="p-4">
+            <PriceGraph stockSymbol={stock.ticker} />
+          </div>
+        );
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -54,7 +160,7 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: '100%' }}
             transition={{ duration: 0.3 }}
-            className="w-full sm:w-auto sm:max-w-2xl max-h-[80vh] sm:h-auto sm:max-h-[90vh] 
+            className="w-full sm:w-[600px] max-h-[80vh] sm:h-auto sm:max-h-[90vh] 
                      overflow-y-auto bg-white dark:bg-gray-800 
                      rounded-t-2xl sm:rounded-2xl shadow-xl 
                      border-t border-gray-200/50 dark:border-gray-700/50 sm:border
@@ -136,94 +242,61 @@ export const StockModal = ({ stock, isOpen, onClose }: StockModalProps) => {
               </div>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-4 space-y-4">
-              {/* Main Info Grid */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-4 rounded-xl bg-gray-50/50 dark:bg-gray-700/50
-                             border border-gray-100/50 dark:border-gray-600/50
-                             hover:bg-gray-50/70 dark:hover:bg-gray-700/70
-                             group transition-all duration-200">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <FiGlobe className="w-4 h-4 text-light-accent dark:text-blue-400" />
-                    <span className="text-sm font-medium text-light-text-secondary dark:text-gray-400">
-                      Exchange
-                    </span>
-                  </div>
-                  <p className="text-light-text-primary dark:text-white font-medium">
-                    {stock.primary_exchange}
-                  </p>
-                </div>
-
-                <div className="p-4 rounded-xl bg-gray-50/50 dark:bg-gray-700/50
-                             border border-gray-100/50 dark:border-gray-600/50
-                             hover:bg-gray-50/70 dark:hover:bg-gray-700/70
-                             group transition-all duration-200">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <FiDollarSign className="w-4 h-4 text-light-accent dark:text-blue-400" />
-                    <span className="text-sm font-medium text-light-text-secondary dark:text-gray-400">
-                      Currency
-                    </span>
-                  </div>
-                  <p className="text-light-text-primary dark:text-white font-medium">
-                    {stock.currency_name}
-                  </p>
-                </div>
-
-                <div className="p-4 rounded-xl bg-gray-50/50 dark:bg-gray-700/50
-                             border border-gray-100/50 dark:border-gray-600/50
-                             hover:bg-gray-50/70 dark:hover:bg-gray-700/70
-                             group transition-all duration-200">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <FiBarChart2 className="w-4 h-4 text-light-accent dark:text-blue-400" />
-                    <span className="text-sm font-medium text-light-text-secondary dark:text-gray-400">
-                      Market
-                    </span>
-                  </div>
-                  <p className="text-light-text-primary dark:text-white font-medium">
-                    {stock.market}
-                  </p>
-                </div>
-
-                <div className="p-4 rounded-xl bg-gray-50/50 dark:bg-gray-700/50
-                             border border-gray-100/50 dark:border-gray-600/50
-                             hover:bg-gray-50/70 dark:hover:bg-gray-700/70
-                             group transition-all duration-200">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <FiTrendingUp className="w-4 h-4 text-light-accent dark:text-blue-400" />
-                    <span className="text-sm font-medium text-light-text-secondary dark:text-gray-400">
-                      Type
-                    </span>
-                  </div>
-                  <p className="text-light-text-primary dark:text-white font-medium">
-                    {stock.type}
-                  </p>
-                </div>
+            {/* Tab Navigation */}
+            <div className="px-4 sm:px-6 border-b border-gray-200/50 dark:border-gray-700/50">
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => setActiveTab('info')}
+                  className={`py-3 px-4 relative ${
+                    activeTab === 'info'
+                      ? 'text-light-accent dark:text-blue-400'
+                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                  }`}
+                >
+                  Info
+                  {activeTab === 'info' && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-light-accent dark:bg-blue-400"
+                    />
+                  )}
+                </button>
+                <button
+                  onClick={() => setActiveTab('graph')}
+                  className={`py-3 px-4 relative ${
+                    activeTab === 'graph'
+                      ? 'text-light-accent dark:text-blue-400'
+                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                  }`}
+                >
+                  Price Graph
+                  {activeTab === 'graph' && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-light-accent dark:bg-blue-400"
+                    />
+                  )}
+                </button>
               </div>
+            </div>
 
-              {/* Additional Info */}
-              <div className="space-y-3">
-                <div className="p-4 rounded-xl bg-gray-50/50 dark:bg-gray-700/50
-                             border border-gray-100/50 dark:border-gray-600/50
-                             hover:bg-gray-50/70 dark:hover:bg-gray-700/70
-                             transition-colors duration-200">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-2">
-                      <FiInfo className="w-4 h-4 text-light-accent dark:text-blue-400" />
-                      <span className="text-sm font-medium text-light-text-secondary dark:text-gray-400">
-                        About
-                      </span>
-                    </div>
-                    <span className="text-xs text-light-text-secondary dark:text-gray-400">
-                      {stock.primary_exchange}
-                    </span>
-                  </div>
-                  <p className="text-sm text-light-text-primary dark:text-white leading-relaxed">
-                    {stock.name} ({stock.ticker}) is listed on the {stock.primary_exchange} exchange.
-                    It trades in {stock.currency_name} currency as a {stock.type} instrument.
-                  </p>
-                </div>
-              </div>
+            {/* Tab Content with Fixed Height */}
+            <div className="h-[400px] relative">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ 
+                    duration: 0.2,
+                    ease: "easeInOut"
+                  }}
+                  className="absolute inset-0 overflow-y-auto"
+                >
+                  {renderTabContent()}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </motion.div>
         </div>
