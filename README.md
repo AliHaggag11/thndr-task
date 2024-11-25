@@ -71,7 +71,7 @@
 
 2. **Install dependencies**
    ```bash
-   cd nasdaq-explorer
+   cd thndr-task
    npm install
    ```
 
