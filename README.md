@@ -66,7 +66,7 @@
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/alihaggag11/nasdaq-explorer.git
+   git clone https://github.com/alihaggag11/thndr-task.git
    ```
 
 2. **Install dependencies**
