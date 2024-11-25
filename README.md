@@ -66,12 +66,12 @@
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/alihaggag11/thndr-task.git
+   git clone https://github.com/alihaggag11/nasdaq-explorer.git
    ```
 
 2. **Install dependencies**
    ```bash
-   cd thndr-task
+   cd nasdaq-explorer
    npm install
    ```
 
@@ -110,4 +110,29 @@
   - Custom Error Service for handling errors
   - React Error Boundaries for component-level error handling
   - Axios Interceptors for managing API request errors
+
+  ### 📖 Documentation
+
+  - **API Integration**
+    The application uses Polygon.io's REST API with sophisticated error handling and rate limiting.
+
+  - **Error Handling**
+    Comprehensive error management system.
+
+  - **Market Hours**
+    Precise market status tracking.
+
+  ### 🤝 Contributing
+
+  1. Fork the Project
+  2. Create your Feature Branch (git checkout -b feature/AmazingFeature)
+  3. Commit your Changes (git commit -m 'Add some AmazingFeature')
+  4. Push to the Branch (git push origin feature/AmazingFeature)
+  5. Open a Pull Request
+
+  ### 📝 License
+
+  Distributed under the MIT License. See LICENSE for more information.
+
+  Made with ❤️ by Ali Haggag
 
