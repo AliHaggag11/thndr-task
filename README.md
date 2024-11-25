@@ -1,7 +1,7 @@
 <div align="center">
 
 
-  <img src="/public/NDAQ_BIG.png" alt="NASDAQ Explorer Logo" width="200" style="margin: 20px 0" />
+  <!-- <img src="/public/NDAQ_BIG.png" alt="NASDAQ Explorer Logo" width="200" style="margin: 20px 0" /> -->
 
   # NASDAQ Stock Explorer
   <img src="/public/cover.png" alt="NASDAQ Explorer Cover" width="100%" style="margin-bottom: 20px; border-radius: 8px;" />
