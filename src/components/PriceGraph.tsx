@@ -13,6 +13,7 @@ import {
   Filler,
   ChartOptions,
 } from 'chart.js';
+import { cacheService, CACHE_DURATION } from '../services/cacheService';
 
 ChartJS.register(
   CategoryScale,
@@ -33,10 +34,6 @@ interface PriceGraphProps {
 const API_KEY = import.meta.env.VITE_POLYGON_API_KEY;
 const BASE_URL = 'https://api.polygon.io/v2';
 
-// Cache for API responses
-const cache = new Map<string, { data: any; timestamp: number }>();
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
 // Rate limiting queue
 let lastRequestTime = 0;
 const MIN_REQUEST_INTERVAL = 12000; // 12 seconds between requests (5 requests per minute)
@@ -51,11 +48,10 @@ const fetchWithRateLimit = async (url: string) => {
     );
   }
 
-  // Check cache first
   const cacheKey = url;
-  const cachedData = cache.get(cacheKey);
-  if (cachedData && (Date.now() - cachedData.timestamp) < CACHE_DURATION) {
-    return cachedData.data;
+  const cachedData = cacheService.get(cacheKey);
+  if (cachedData) {
+    return cachedData;
   }
 
   lastRequestTime = Date.now();
@@ -63,9 +59,9 @@ const fetchWithRateLimit = async (url: string) => {
   
   if (!response.ok) {
     if (response.status === 429) {
-      // If rate limited, try to use cached data if available
+      const cachedData = cacheService.get(cacheKey);
       if (cachedData) {
-        return cachedData.data;
+        return cachedData;
       }
       throw new Error('Rate limit reached. Please try again in a few minutes.');
     }
@@ -73,9 +69,7 @@ const fetchWithRateLimit = async (url: string) => {
   }
 
   const data = await response.json();
-  
-  // Cache the response
-  cache.set(cacheKey, { data, timestamp: Date.now() });
+  cacheService.set(cacheKey, data);
   
   return data;
 };

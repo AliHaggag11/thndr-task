@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { ApiResponse, StockDetails } from '../types';
+import { cacheService } from './cacheService';
+import { handleError, isRetryableError } from './errorService';
 
 const api = axios.create({
   baseURL: 'https://api.polygon.io',
@@ -36,12 +38,15 @@ const fetchWithRetry = async <T>(
     const response = await api.get(url, { params });
     return response.data;
   } catch (error: any) {
-    if (error.response?.status === 429 && retries > 0) {
-      console.log(`Rate limited. Retrying in ${delay}ms... (${retries} retries left)`);
+    const appError = handleError(error);
+    
+    if (isRetryableError(appError) && retries > 0) {
+      console.log(`Retrying request in ${delay}ms... (${retries} retries left)`);
       await new Promise(resolve => setTimeout(resolve, delay));
       return fetchWithRetry(url, params, retries - 1, delay * 2);
     }
-    throw new Error(error.response?.data?.message || 'Failed to fetch data');
+    
+    throw appError;
   }
 };
 
@@ -67,20 +72,30 @@ export const fetchStocks = async (
   search?: string,
   nextUrl?: string
 ): Promise<ApiResponse> => {
-  const url = nextUrl || '/v3/reference/tickers';
-  const params = {
-    market: 'stocks',
-    active: 'true',
-    sort: 'ticker',
-    order: 'asc',
-    limit: '20',
-    search,
-  };
+  const cacheKey = `stocks-${search}-${nextUrl}`;
+  const cachedData = cacheService.get<ApiResponse>(cacheKey);
+  
+  if (cachedData) {
+    return cachedData;
+  }
 
   return new Promise((resolve, reject) => {
     requestQueue.push(async () => {
       try {
-        const result = await fetchWithRetry<ApiResponse>(url, params);
+        const result = await fetchWithRetry<ApiResponse>(
+          nextUrl || '/v3/reference/tickers',
+          {
+            market: 'stocks',
+            active: 'true',
+            sort: 'ticker',
+            order: 'asc',
+            limit: '20',
+            search,
+          }
+        );
+        
+        // Cache the response for 5 minutes
+        cacheService.set(cacheKey, result);
         resolve(result);
       } catch (error) {
         reject(error);
@@ -91,15 +106,23 @@ export const fetchStocks = async (
 };
 
 export const fetchStockDetails = async (ticker: string): Promise<StockDetails> => {
-  const url = `/v2/aggs/ticker/${ticker}/prev`;
-  const params = {
-    adjusted: true,
-  };
+  const cacheKey = `stock-details-${ticker}`;
+  const cachedData = cacheService.get<StockDetails>(cacheKey);
+  
+  if (cachedData) {
+    return cachedData;
+  }
 
   return new Promise((resolve, reject) => {
     requestQueue.push(async () => {
       try {
-        const result = await fetchWithRetry<StockDetails>(url, params);
+        const result = await fetchWithRetry<StockDetails>(
+          `/v2/aggs/ticker/${ticker}/prev`,
+          { adjusted: true }
+        );
+        
+        // Cache the response for 1 minute (since it's real-time data)
+        cacheService.set(cacheKey, result, 60 * 1000);
         resolve(result);
       } catch (error) {
         reject(error);
